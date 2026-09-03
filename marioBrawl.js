@@ -48,6 +48,15 @@ runGame();
 
 // Creating a function that calls the other functions 
 // Needed to start the game
+function addToLog(message) {
+    const log = document.getElementById('selected');
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.innerText = message;
+    log.appendChild(entry);
+    log.scrollTop = log.scrollHeight;
+}
+
 function runGame() {
     creatingCharacterAbilityValues();
     printStats(currentIndex);
@@ -166,8 +175,8 @@ function randomOption() {
 }
 // This function allows the user to select a character
 function selectCharacter() {
-    // Displaying what the user picked 
-    document.getElementById('selected').innerText = characters[currentIndex].toUpperCase() + ' Selected!';
+    // Displaying what the user picked
+    addToLog(characters[currentIndex].toUpperCase() + ' Selected!');
 
     // Disabling all the buttons after a character is picked
     document.getElementById('btnSelectCharacter').disabled = true;
@@ -308,7 +317,7 @@ function beginGame() {
     document.getElementById('btnHealing').disabled = false;
 
     // Getting rid of all the text in the selected paragraph so it can be used for ability updates
-    document.getElementById('selected').innerText = '';
+    document.getElementById('selected').textContent = '';
 
     // Starting a general timer at the top of the page
     setInterval(timer, 1000);
@@ -321,10 +330,6 @@ function beginGame() {
 
     // Calling the function that checks if the game is over
     setInterval(endGame, 20);
-
-    // Getting rid of the welcome message
-    document.getElementById('welcomeMessage').remove();
-    document.getElementById('welcomeMessage2').remove();
 }
 function timer() {
     // Displaying how long the user has been playing at the top of the page
@@ -351,7 +356,7 @@ function normalAttack(playerAttack, randomQuote, playerAttacked) {
     if (countdownClock != -1) {
         let attackDamage = Math.floor(Math.random() * ((normalAttacks[playerAttack] * (randomQuote + 2) / 2) - normalAttacks[playerAttack])) + normalAttacks[playerAttack];
         currentHealths[playerAttacked] = currentHealths[playerAttacked] - attackDamage;
-        document.getElementById('selected').innerText = characters[playerAttack].toUpperCase() + ' Has dealt ' + attackDamage + ' normal damage upon ' + characters[playerAttacked].toUpperCase();
+        addToLog(characters[playerAttack].toUpperCase() + ' Has dealt ' + attackDamage + ' normal damage upon ' + characters[playerAttacked].toUpperCase());
         printStats(currentIndex);
         computerStats();
     }
@@ -362,7 +367,7 @@ function specialAttack(playerAttack, randomQuote, randomQuote2, playerAttacked) 
     if (countdownClock != -1) {
         let specialDamage = Math.floor(Math.random() * ((specialAttacks[playerAttack] * (randomQuote + randomQuote2 + 2) / 2) - specialAttacks[playerAttack])) + specialAttacks[playerAttack];
         currentHealths[playerAttacked] = currentHealths[playerAttacked] - specialDamage;
-        document.getElementById('selected').innerText = characters[playerAttack].toUpperCase() + ' Has dealt ' + specialDamage + ' special damage upon ' + characters[playerAttacked].toUpperCase();
+        addToLog(characters[playerAttack].toUpperCase() + ' Has dealt ' + specialDamage + ' special damage upon ' + characters[playerAttacked].toUpperCase());
         printStats(currentIndex);
         computerStats();
     }
@@ -372,7 +377,7 @@ function heal(playerHeal, healMultiplier, playerHealed) {
     if (countdownClock != -1) {
         let healing = Math.floor(Math.random() * ((healPowers[playerHeal] * (healMultiplier + 2) / 2) - healPowers[playerHeal])) + healPowers[playerHeal];
         currentHealths[playerHealed] = currentHealths[playerHealed] + healing;
-        document.getElementById('selected').innerText = characters[playerHealed].toUpperCase() + ' Has healed ' + healing + ' health points'; 
+        addToLog(characters[playerHealed].toUpperCase() + ' Has healed ' + healing + ' health points');
         printStats(currentIndex);
         computerStats();
     }
@@ -450,7 +455,9 @@ function disableButtons() {
     document.getElementById('btnHealing').disabled = true;
 
     // Enabling the textbox so the user can type in it
-    document.getElementById('typeQuotes').disabled = false;
+    const typeQuotes = document.getElementById('typeQuotes');
+    typeQuotes.disabled = false;
+    typeQuotes.focus();
 }
 //This function shows the quote and allows the user to type it in after the simple attack btn is clicked
 function simpleAttackPressed() {
@@ -502,7 +509,7 @@ function simpleAttackTyping() {
     }
     // If the user did not type in the quote on time, no damage is inflicted and the turn is over
     else if (wordsTyped.value != randomQuote.substr(0,randomQuote.lastIndexOf('')) && countdownClock == 0 && normal == true) {
-        document.getElementById('selected').innerText = 'Normal Attack Un-Successful!';
+        addToLog('Normal Attack Un-Successful!');
         enableButtons();
         document.getElementById('typedWords').innerText = '';
         document.getElementById('btnSpecialAttack').disabled = false;
@@ -566,7 +573,7 @@ function specialAttackTyping() {
     }
     // If the user did not type in the quote on time, no damage is inflicted and the turn is over
     else if (wordsTyped.value != randomQuote.substr(0,randomQuote.lastIndexOf('')) && countdownClock < 1 && special == true) {
-        document.getElementById('selected').innerText = 'Special Attack Un-Successful!';
+        addToLog('Special Attack Un-Successful!');
         document.getElementById('typedWords').innerText = '';
         enableButtons();
         special = false;
@@ -623,7 +630,7 @@ function healTyping() {
     }
     // If the user did not type in the quote on time, no healing is done and the turn is over
     else if (wordsTyped.value != randomQuote.substr(0,randomQuote.lastIndexOf('')) && countdownClock < 1 && healDecision == true) {
-        document.getElementById('selected').innerText = 'Healing Un-Successful!';
+        addToLog('Healing Un-Successful!');
         enableButtons();
         document.getElementById('typedWords').innerText = '';
         document.getElementById('btnSpecialAttack').disabled = false;
